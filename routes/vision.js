@@ -9,9 +9,9 @@ const Multer = require('multer');
 var uploadHandler = Multer({
 	storage: multerGoogleStorage.storageEngine({
 		autoRetry: true,
-		bucket: BUCKETNAME,
-		projectId: PROJECTID,
-		keyFilename: KEYFILENAME,
+		bucket: process.env.BUCKETNAME,
+		projectId: process.env.PROJECTID,
+		keyFilename: process.env.KEYFILENAME,
 		filename: (req, file, cb) => {
 			cb(null, `${Date.now()}_${file.originalname}`);
 		}
@@ -34,32 +34,6 @@ router.post('/', uploadHandler.any(), function (req, res) {
 			message: "Failed: Missing data"
 		});
 	}
-});
-
-router.post('/', multer.single('label'), (req, res) => {
-	if (req.body.product) {
-		let productData = {
-			imgPath: req.file.path,
-			productName: req.body.product,
-			userID: req._passport['session']['user']
-		};
-		Controllers.visionController.processLabel(productData, res);
-	}
-	else {
-		res.json({
-			statusCode: 400,
-			message: "Failed: Missing data"
-		});
-	}
-});
-
-router.post('/test', (req, res) => {
-	let productData = {
-		imgPath: process.env.TEST_IMG,
-		productName: "TEST PRODUCT",
-		userID: "TEST ID"
-	};
-	Controllers.visionController.processLabel(productData, res);
 });
 
 module.exports = router;
