@@ -1,7 +1,6 @@
 let Service = require("../services");
 const fs = require('fs');
 const util = require('util');
-const unlinkFile = util.promisify(fs.unlink);
 
 const processLabel = async (req, res) => {
     if (req.imgPath) {
@@ -32,13 +31,6 @@ const processLabel = async (req, res) => {
             message: "Failed: No image provided"
         });
     }
-
-    // Tidy uploads, remove image from temp server storage
-    if (imgPath != process.env.TEST_IMG) {
-        await unlinkFile(imgPath)
-        console.log("Image removed from server")
-    } 
-
 }
 
 module.exports = {
