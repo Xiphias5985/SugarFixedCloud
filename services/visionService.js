@@ -27,23 +27,27 @@ function union(setA, setB) {
 };
 
 const extractLabel = async (req, res) => {
-    let img_path = req
-    if(img_path) {
-        // Create a client
-        const client = new vision.ImageAnnotatorClient(credentials=process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    try {
+        let img_path = req
+        if(img_path) {
+            // Create a client
+            const client = new vision.ImageAnnotatorClient(credentials=process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-        console.log("GCP client connected")
-        // Performs text detection on the local file
-        const [result] = await client.textDetection(img_path);
-        const detections = result.textAnnotations;
-        if (detections.length != 0){
-            let label = detections.shift().description;
-            if(label) {
-                return label
+            console.log("GCP client connected")
+            // Performs text detection on the local file
+            const [result] = await client.textDetection(img_path);
+            const detections = result.textAnnotations;
+            if (detections.length != 0){
+                let label = detections.shift().description;
+                if(label) {
+                    return label
+                }
             }
         }
+        return null
+    } catch (error) {
+        console.log(error);
     }
-    return null
 };
 
 const extractSugars = (req, res) => {
